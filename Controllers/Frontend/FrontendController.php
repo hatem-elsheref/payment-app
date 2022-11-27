@@ -1,14 +1,13 @@
 <?php
 
-namespace Controllers;
+namespace Controllers\Frontend;
 
-class HomeController
+class FrontController
 {
 
- 
+
     public function index($name)
     {
         echo "Hello Framework With MVC " . $name;
     }
-    
 }

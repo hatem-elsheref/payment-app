@@ -67,14 +67,12 @@ class Router
         // determine where to go
         //=> www.website.com/posts/show/1   posts/show/{post_id}/last
 
-
         $routes = Router::$routes[$this->request->getMethod()];
         if (in_array($this->request->getUrlWithoutQuery(), array_keys($routes))) {
             //start separate controller and actions
            
             $params = $this->request->getParams();
             $callback = $routes[$this->request->getUrlWithoutQuery()];
-
          try {
             if (is_callable($callback)) {
                 return call_user_func_array($callback, $params);
@@ -82,7 +80,7 @@ class Router
                 $controllerParts = explode('@', $callback, 2);
                 $fullControllerWithNamespace = self::CONTROLLERS_NAMESPACE . $controllerParts[0];
                 $controllerInstance = new $fullControllerWithNamespace;
-                call_user_func_array([$controllerInstance, $controllerParts[1]], $params);
+                return call_user_func_array([$controllerInstance, $controllerParts[1]], $params);
             } else {
                 return "No Callback Functoin Or Controller For This Route " . $this->request->getUrlWithoutQuery();
                 exit;
@@ -95,7 +93,7 @@ class Router
           //notFoundController
           $notFoundController = self::CONTROLLERS_NAMESPACE . self::NOT_FOUND_CONTROLLER;
           $notFoundControllerInstance = new $notFoundController;
-          call_user_func([$notFoundControllerInstance, self::NOT_FOUND_ACTION]);
+          return call_user_func([$notFoundControllerInstance, self::NOT_FOUND_ACTION]);
         }
     }
 }
