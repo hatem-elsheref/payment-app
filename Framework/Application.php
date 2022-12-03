@@ -23,6 +23,6 @@ class Application
     public function start()
     {
         // handle route here
-        return $this->router->requestHandler2();
+        return $this->router->requestHandler3();
     }
 }

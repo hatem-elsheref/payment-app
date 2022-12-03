@@ -14,7 +14,7 @@ class Database
     public function __construct(array $configurations = [])
     {
         $this->configurations = $configurations;
-       // $this->connection();
+        $this->connection();
     }
 
     private function prepareDsn()

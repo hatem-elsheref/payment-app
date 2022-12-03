@@ -2,14 +2,26 @@
 
 use Framework\Router;
 use Framework\Response;
+use Models\Model;
 
 Router::get('/', 'Frontend\HomeController@index');
-Router::get('/backend', 'Backend\BackendController@test');
-Router::get('/dgaskjdgas', function () {
-    return "hi";
+Router::get('/backend/{page}/page', 'Backend\BackendController@test');
+Router::get('/hello/{var1}/hi/{var2}', function ($var1, $var2) {
+    return "hello $var1 hi $var2";
 });
 
-Router::get('/callback', function($user, $pass){
-    return Response::json(['USER' => $user, 'PASS' => $pass]);
+Router::get('/db', function(){
+    //return Response::json(['USER' => $user, 'PASS' => $pass]);
+
+    $data = [
+
+        'id'      => 1,
+        'name'    => 'Hatem Mohamed Elsheref',
+        'address' => 'Cairo, Egypt',
+        'phone'   => '123465789',
+        'age'     => 24
+    ];
+    return (new Model())->insert($data);
+
 });
 

@@ -7,7 +7,7 @@ class Request
     private $request;
     private $extractedUrl = [];
     private $isHome       = true;
-    private $params       = [];
+   
     public function __construct($request)
     {
         $this->request = $request;
@@ -31,7 +31,9 @@ class Request
 
     private function getQueryString()
     {
-        
+
+        return $_GET;
+        // or
         $params = $this->request['QUERY_STRING'] ?? NULL;
 
         if(!isset($params)) return [];

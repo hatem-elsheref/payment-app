@@ -96,4 +96,91 @@ class Router
           return call_user_func([$notFoundControllerInstance, self::NOT_FOUND_ACTION]);
         }
     }
+
+    public function requestHandler3(){
+        // determine where to go
+        //=> www.website.com/posts/{post_id}  www.website.com/posts/101  
+
+        $routes = Router::$routes[$this->request->getMethod()];
+        $linkParts = explode('/', $this->request->getUrlWithoutQuery());
+        $matchedRoute = $this->getMatchedRouteFromUrl(array_keys($routes), $linkParts);
+
+        if (!is_null($matchedRoute)){
+            $paramsNames  = $this->getRouteParams($matchedRoute); // like {post_id} and others
+            $paramsValues = [];
+            foreach ($paramsNames as $index => $value){
+                $value = str_replace('{', '', $value); // remove {
+                $value = str_replace('}', '', $value); // remove }
+                $paramsValues[$value] = $linkParts[$index];
+            }
+
+            $paramsValues = array_merge($paramsValues, $this->request->getParams());
+            //start call controller
+            
+            $callback = $routes[$matchedRoute];
+            try {
+                if (is_callable($callback)) {
+                    return call_user_func_array($callback, $paramsValues);
+                } else if (is_string($callback)) {
+                    $controllerParts = explode('@', $callback, 2);
+                    $fullControllerWithNamespace = self::CONTROLLERS_NAMESPACE . $controllerParts[0];
+                    $controllerInstance = new $fullControllerWithNamespace;
+                    return call_user_func_array([$controllerInstance, $controllerParts[1]], $paramsValues);
+                } else {
+                    return "No Callback Functoin Or Controller For This Route " . $this->request->getUrlWithoutQuery();
+                }
+             } catch (Error $exception) {
+                return $exception->getMessage();
+             }
+
+        }else{
+            $notFoundController = self::CONTROLLERS_NAMESPACE . self::NOT_FOUND_CONTROLLER;
+            $notFoundControllerInstance = new $notFoundController;
+            return call_user_func([$notFoundControllerInstance, self::NOT_FOUND_ACTION]);
+        }
+
+
+       
+    }
+
+    
+    private function getMatchedRouteFromUrl($routesList, $linkParts)
+    {
+        $is_matched = false;
+        $matchedRoute = null;
+        foreach ($routesList as $route){
+            $route_parts = explode('/', $route);
+            // if route register in routes var like this /posts/{post_id} then the hit must be the same like /posts/101
+            if(count($route_parts) == count($linkParts)){
+                //like /posts/{id}/showAll -> return [0 => 'posts', 2 => 'showAll']
+                $static_route = array_diff($route_parts, $this->getRouteParams($route));
+                // confirm the static words in registered route like the static words in the hit link
+                foreach ($static_route as $index => $item){
+                    if ($item != $linkParts[$index]){
+                     // if one is different go out => this is not the matched route
+                        $is_matched = false;
+                        break;
+                    }else{
+                        $is_matched = true;
+                    }
+                }
+                if ($is_matched){
+                    $matchedRoute  = $route;
+                    break;
+                }
+            }
+        }
+
+        return $matchedRoute;
+    }
+
+    private function getRouteParams($route)
+    {
+        $matches = [];
+        $parts = explode('/', $route);
+        foreach ($parts as $index => $part){
+            preg_match("/{[a-zA-Z]+[a-zA-Z0-9]*}/", $part) ? $matches[$index] = $part : null;
+        }
+        return $matches;
+    }
 }

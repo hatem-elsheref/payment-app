@@ -4,8 +4,8 @@ namespace Controllers\Backend;
 
 class BackendController{
 
-    public function test()
+    public function test($page)
     {
-        return "hi backend";
+        return "hi backend $page";
     }
 }
