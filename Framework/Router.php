@@ -138,9 +138,6 @@ class Router
             $notFoundControllerInstance = new $notFoundController;
             return call_user_func([$notFoundControllerInstance, self::NOT_FOUND_ACTION]);
         }
-
-
-       
     }
 
     
@@ -155,6 +152,7 @@ class Router
                 //like /posts/{id}/showAll -> return [0 => 'posts', 2 => 'showAll']
                 $static_route = array_diff($route_parts, $this->getRouteParams($route));
                 // confirm the static words in registered route like the static words in the hit link
+                var_dump($static_route, $this->getRouteParams($route));
                 foreach ($static_route as $index => $item){
                     if ($item != $linkParts[$index]){
                      // if one is different go out => this is not the matched route
@@ -179,7 +177,7 @@ class Router
         $matches = [];
         $parts = explode('/', $route);
         foreach ($parts as $index => $part){
-            preg_match("/{[a-zA-Z]+[a-zA-Z0-9]*}/", $part) ? $matches[$index] = $part : null;
+            preg_match("/{[a-zA-Z_]+[a-zA-Z0-9_]*}/", $part) ? $matches[$index] = $part : null;
         }
         return $matches;
     }
