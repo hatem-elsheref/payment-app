@@ -40,4 +40,4 @@ ex. [@hatem-elsheref](https://www.linkedin.com/in/hatem-elsheref/)
 
 This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
 
-![Alt text](https://github.com/hatem-elsheref/payment-app/blob/develop/Screenshot%20(16).png?raw=true)
+![Alt text](https://github.com/hatem-elsheref/payment-app/blob/develop/Screenshot%20(15).png?raw=true)
