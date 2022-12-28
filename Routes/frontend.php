@@ -1,27 +1,15 @@
 <?php
 
 use Framework\Router;
-use Framework\Response;
-use Models\Model;
 
+// show products page
 Router::get('/', 'Frontend\HomeController@index');
-Router::get('/backend/{page}/page', 'Backend\BackendController@test');
-Router::get('/hello/{var1}/hi/{var2}', function ($var1, $var2) {
-    return "hello $var1 hi $var2";
-});
-
-Router::get('/db', function(){
-    //return Response::json(['USER' => $user, 'PASS' => $pass]);
-
-    $data = [
-
-        'id'      => 1,
-        'name'    => 'Hatem Mohamed Elsheref',
-        'address' => 'Cairo, Egypt',
-        'phone'   => '123465789',
-        'age'     => 24
-    ];
-    return (new Model())->insert($data);
-
-});
+Router::get('/products', 'Frontend\HomeController@products');
+Router::get('/buy-now/{product}', 'Frontend\HomeController@showCheckoutForm');
+Router::get('/add-to-cart/{product}', 'Frontend\HomeController@addToCart');
+Router::post('/checkout', 'Frontend\HomeController@checkout');
+Router::get('/processing-to-payment', 'Frontend\HomeController@process');
+Router::get('/pay', 'Frontend\HomeController@completePayment');
+Router::post('/pay', 'Frontend\HomeController@createStripePaymentIntent');
+Router::get('/payment/{orderId}', 'Frontend\HomeController@paymentCallback');
 

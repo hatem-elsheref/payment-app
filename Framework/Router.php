@@ -3,6 +3,7 @@
 
 namespace Framework;
 
+use function Couchbase\defaultDecoder;
 use Error;
 
 class Router
@@ -100,7 +101,6 @@ class Router
     public function requestHandler3(){
         // determine where to go
         //=> www.website.com/posts/{post_id}  www.website.com/posts/101  
-
         $routes = Router::$routes[$this->request->getMethod()];
         $linkParts = explode('/', $this->request->getUrlWithoutQuery());
         $matchedRoute = $this->getMatchedRouteFromUrl(array_keys($routes), $linkParts);
@@ -109,12 +109,13 @@ class Router
             $paramsNames  = $this->getRouteParams($matchedRoute); // like {post_id} and others
             $paramsValues = [];
             foreach ($paramsNames as $index => $value){
-                $value = str_replace('{', '', $value); // remove {
-                $value = str_replace('}', '', $value); // remove }
+//                $value = str_replace('{', '', $value); // remove {
+//                $value = str_replace('}', '', $value); // remove }
+                $value = preg_replace(['/{/', '/}/'], '', $value);
                 $paramsValues[$value] = $linkParts[$index];
             }
 
-            $paramsValues = array_merge($paramsValues, $this->request->getParams());
+//            $paramsValues = array_merge($paramsValues, $this->request->getParams());
             //start call controller
             
             $callback = $routes[$matchedRoute];
@@ -130,6 +131,7 @@ class Router
                     return "No Callback Functoin Or Controller For This Route " . $this->request->getUrlWithoutQuery();
                 }
              } catch (Error $exception) {
+                dd($exception);
                 return $exception->getMessage();
              }
 
@@ -152,7 +154,7 @@ class Router
                 //like /posts/{id}/showAll -> return [0 => 'posts', 2 => 'showAll']
                 $static_route = array_diff($route_parts, $this->getRouteParams($route));
                 // confirm the static words in registered route like the static words in the hit link
-                var_dump($static_route, $this->getRouteParams($route));
+                //var_dump($static_route, $this->getRouteParams($route));
                 foreach ($static_route as $index => $item){
                     if ($item != $linkParts[$index]){
                      // if one is different go out => this is not the matched route

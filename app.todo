@@ -1,9 +1,0 @@
--- Make Model And Connection To Database Build Core Function To Call Database And Execute Crud Operations
--- Make simple Orm
--- Make Simple Tinker Or Migrations
--- Read From CLI
--- Start Make Env File
--- Make CSRF_TOKEN
--- Make Hello Screen For Frontend And Backend
--- Read About XSS , SESSIONS AND SQL INJECTION
--- Make Built In Validation Classes

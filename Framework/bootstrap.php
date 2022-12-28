@@ -33,6 +33,13 @@ function loadConfigurations()
     }
 }
 
+function loadHelpers()
+{
+    foreach (glob(HELPER_PATH . DIRECTORY_SEPARATOR . '*.php') as $helper_file){
+        include_once $helper_file;
+    }
+}
+
 function loadRoutes()
 {
     foreach (glob(ROUTES_PATH . DIRECTORY_SEPARATOR . '*.php') as $route_file){
@@ -43,5 +50,6 @@ function loadRoutes()
 (function (){
     loadConfigurations();
     loadRoutes();
+    loadHelpers();
 })();
 

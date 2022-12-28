@@ -70,6 +70,13 @@ class Request
         return $this->isHome;
     }
 
+    public function body($input = null)
+    {
+        if (!is_null($input) and is_string($input))
+            return $_REQUEST[$input];
+        else
+            return $_REQUEST;
+    }
     public function parseUrl()
     {
         // separate url [controllers - actions - params]
@@ -94,6 +101,15 @@ class Request
         $this->extractedUrl['params']     = $params;
 
         return $this->extractedUrl;
+    }
+
+    public function baseUrl()
+    {
+        return APP_URL;
+    }
+    public function appUrl()
+    {
+        return $this->baseUrl() . "/" . trim($this->request['REQUEST_URI'], "/");
     }
 
 }

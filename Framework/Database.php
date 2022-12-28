@@ -25,8 +25,13 @@ class Database
 
     private function connection()
     {
+        $options = [
+            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
+            PDO::ATTR_EMULATE_PREPARES   => false,
+        ];
         try{
-            self::$connectionHandler = new PDO($this->prepareDsn(), $this->configurations['db_user'], $this->configurations['db_pass']);
+            self::$connectionHandler = new PDO($this->prepareDsn(), $this->configurations['db_user'], $this->configurations['db_pass'], $options);
         }catch (PDOException $exception){
             throw new Exception($exception->getMessage());
             exit(0);

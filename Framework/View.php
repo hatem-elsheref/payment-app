@@ -18,21 +18,22 @@ class View
 
     public static function make(string $viewName, $data = [], $isBackend = true)
     {
-        $viewName = str_replace('.', DIRECTORY_SEPARATOR, $viewName) . self::$templateExtension;
-        $view_path = VIEWS_PATH . DIRECTORY_SEPARATOR . $viewName;
+        $view_path = self::prepareViewPath($viewName);
 
         if(file_exists($view_path))
         {
             return self::renderView($view_path, $isBackend, $data);
         }else{
+            throw new \Exception("view not found");
         }
     }
 
-    public static function renderView($view, $isBackend, $data)
+    public static function renderView($view, $isBackend = false, $data = [])
     {
        $mainLayout  = self::renderLayout($isBackend, $data);
-       $mainContent = self::renderContent($view, $data);
-       return str_replace(self::$mainContent, $mainContent, $mainLayout);
+       $mainContent = self::renderContent(self::prepareViewPath($view), $data);
+        flush_session();
+        return str_replace(self::$mainContent, $mainContent, $mainLayout);
     }
 
     public static function renderContent($view, $data)
@@ -72,4 +73,12 @@ class View
         ob_end_clean();
         return  $mainLayout;  
     }
+
+
+    public static function prepareViewPath($view){
+      return VIEWS_PATH . DIRECTORY_SEPARATOR .
+            str_replace('.', DIRECTORY_SEPARATOR, $view) . self::$templateExtension;
+
+    }
+
 }
